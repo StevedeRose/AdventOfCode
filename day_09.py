@@ -23,7 +23,7 @@ def compute_values(history):
     return array([previous_value, next_value])
 
 
-def read_input(file_path='./input_9.txt'):
+def read_input(file_path='./input_09.txt'):
     """
     Lit le fichier d'entrée et retourne les lignes non vides sous forme de listes d'entiers.
     """

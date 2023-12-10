@@ -81,7 +81,7 @@ def main():
     """
     Fonction principale
     """
-    chemin_fichier = './input_3.txt'
+    chemin_fichier = './input_03.txt'
     grille = load_grid(chemin_fichier)
     result_part1, result_part2 = compute_total(grille)
     print("Solution Partie 1:", result_part1)

@@ -37,7 +37,7 @@ def main():
     """
     Fonction principale.
     """
-    file_path = './input_4.txt'
+    file_path = './input_04.txt'
     lignes = load_file(file_path)
 
     solutions = compute_solutions(lignes)

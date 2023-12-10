@@ -34,7 +34,7 @@ def process_lines(lines, words, part):
 def main():
     """Fonction principale"""
     # Charger les lignes à partir du fichier
-    with open('./input_1.txt', mode='r', encoding='utf-8') as f:
+    with open('./input_01.txt', mode='r', encoding='utf-8') as f:
         lines = f.readlines()
 
     # Partie 1

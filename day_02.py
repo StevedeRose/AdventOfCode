@@ -27,7 +27,7 @@ def main():
     """
     Fonction principale.
     """
-    with open('./input_2.txt', mode='r', encoding='utf-8') as file:
+    with open('./input_02.txt', mode='r', encoding='utf-8') as file:
         lines = file.read().splitlines()
 
     total_part_1 = total_part_2 = 0

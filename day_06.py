@@ -18,7 +18,7 @@ def best_distances_number(temps, distance):
     return max_temps - min_temps + 1
 
 
-def read_input(file_path='./input_6.txt'):
+def read_input(file_path='./input_06.txt'):
     """
     Lit le fichier d'entrée et retourne les lignes non vides.
     """

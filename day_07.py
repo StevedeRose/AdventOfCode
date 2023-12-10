@@ -57,7 +57,7 @@ def calculate_total_bids(bids):
     return sum(bid * (index + 1) for index, bid in enumerate(bids[::-1]))
 
 
-def read_input(file_path='./input_7.txt'):
+def read_input(file_path='./input_07.txt'):
     """
     Lit le fichier d'entrée et retourne les lignes non vides.
     """

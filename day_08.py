@@ -36,7 +36,7 @@ def part2_solution(pattern, node_mappings):
     print("Solution Partie 2 :", lcm(*trace_lengths))
 
 
-def read_input(file_path="./input_8.txt"):
+def read_input(file_path="./input_08.txt"):
     """
     Lit les données à partir du fichier spécifié et
     renvoie le motif et les correspondances de nœuds.
