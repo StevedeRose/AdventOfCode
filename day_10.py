@@ -6,106 +6,99 @@ Date de création: 10.12.2023
 import numpy as np
 
 
-def read_input(file_path='./input_10.txt'):
+def read_input(file_path: str = './input_10.txt'):
     """
     Lit le fichier d'entrée et retourne les lignes non vides.
     """
     with open(file_path, mode='r', encoding='utf-8') as f:
-        field = np.array([list(line)
-                         for line in f.read().splitlines() if line])
+        field = np.array([list(l) for l in f.read().splitlines() if l])
     return field
 
 
-def get_sheep(field):
-    """
-    Retourne la position du mouton dans le champ.
-    """
-    return tuple(np.argwhere(field == 'S')[0])
-
-
-def get_first(field, sheep):
+def get_first_position(field: np.ndarray, sheep: tuple):
     """
     Retourne la première position à explorer dans le champ.
     """
-    if field[sheep[0] + 1, sheep[1]] in ['|', 'L', 'J']:
-        return sheep[0] + 1, sheep[1]
-    if field[sheep[0], sheep[1] + 1] in ['-', '7', 'J']:
-        return sheep[0], sheep[1] + 1
-    return (sheep[0] - 1, sheep[1])
+    row, col = sheep
+    if field[row + 1, col] in ['|', 'L', 'J']:
+        return row + 1, col
+    if field[row, col + 1] in ['-', '7', 'J']:
+        return row, col + 1
+    return row - 1, col
 
 
-def update_path_matrix(matrix, curr, val, pos_1, pos_2, turn=True):
+def update_path_matrix(matrix: np.ndarray, current_pos: tuple, val: int,
+                       pos_1: tuple, pos_2: tuple, turn: bool = True):
     """
     Met à jour la matrice représentant le chemin suivi.
     """
-    matrix[curr] = 2
+    matrix[current_pos] = 2
     if 0 < pos_1[0] < matrix.shape[0] and 0 < pos_1[1] < matrix.shape[1] and matrix[pos_1] == 0:
         matrix[pos_1] = val
     if 0 < pos_2[0] < matrix.shape[0] and 0 < pos_2[1] < matrix.shape[1] and matrix[pos_2] == 0:
         matrix[pos_2] = val if turn else -val
 
 
-def get_next_position(curr, prev, field, path_matrix):
+def get_next_position(current_pos: tuple, previous_pos: tuple,
+                      field: np.ndarray, path_matrix: np.ndarray):
     """
     Retourne la position suivante à explorer dans le champ.
     """
-    curr_val = field[curr]
-    result = curr
+    current_val = field[current_pos]
+    row, col = result = current_pos
 
-    if curr_val == '|':
-        val = prev[0] - curr[0]
-        update_path_matrix(path_matrix, curr, val,
-                           (curr[0], curr[1] - 1), (curr[0], curr[1] + 1), False)
-        result = (2 * curr[0] - prev[0], curr[1])
-    elif curr_val == '-':
-        val = curr[1] - prev[1]
-        update_path_matrix(path_matrix, curr, val,
-                           (curr[0] - 1, curr[1]), (curr[0] + 1, curr[1]), False)
-        result = (curr[0], 2 * curr[1] - prev[1])
-    elif curr_val == 'L':
-        val = prev[0] + prev[1] - curr[0] - curr[1]
-        update_path_matrix(path_matrix, curr, val,
-                           (curr[0] + 1, curr[1]), (curr[0], curr[1] - 1))
-        result = (2 * curr[0] - prev[0] - 1, 2 * curr[1] - prev[1] + 1)
-    elif curr_val == 'J':
-        val = curr[0] + prev[1] - prev[0] - curr[1]
-        update_path_matrix(path_matrix, curr, val,
-                           (curr[0] + 1, curr[1]), (curr[0], curr[1] + 1))
-        result = (2 * curr[0] - prev[0] - 1, 2 * curr[1] - prev[1] - 1)
-    elif curr_val == '7':
-        val = curr[0] + curr[1] - prev[0] - prev[1]
-        update_path_matrix(path_matrix, curr, val,
-                           (curr[0] - 1, curr[1]), (curr[0], curr[1] + 1))
-        result = (2 * curr[0] - prev[0] + 1, 2 * curr[1] - prev[1] - 1)
-    elif curr_val == 'F':
-        val = prev[0] + curr[1] - curr[0] - prev[1]
-        update_path_matrix(path_matrix, curr, val,
-                           (curr[0] - 1, curr[1]), (curr[0], curr[1] - 1))
-        result = (2 * curr[0] - prev[0] + 1, 2 * curr[1] - prev[1] + 1)
-    return curr, result
+    if current_val == '|':
+        value = previous_pos[0] - row
+        update_path_matrix(path_matrix, current_pos, value,
+                           (row, col - 1), (row, col + 1), False)
+        result = (2 * row - previous_pos[0], col)
+    elif current_val == '-':
+        value = col - previous_pos[1]
+        update_path_matrix(path_matrix, current_pos, value,
+                           (row - 1, col), (row + 1, col), False)
+        result = (row, 2 * col - previous_pos[1])
+    elif current_val == 'L':
+        value = previous_pos[0] + previous_pos[1] - row - col
+        update_path_matrix(path_matrix, current_pos, value,
+                           (row + 1, col), (row, col - 1))
+        result = (2 * row - previous_pos[0] - 1, 2 * col - previous_pos[1] + 1)
+    elif current_val == 'J':
+        value = row + previous_pos[1] - previous_pos[0] - col
+        update_path_matrix(path_matrix, current_pos, value,
+                           (row + 1, col), (row, col + 1))
+        result = (2 * row - previous_pos[0] - 1, 2 * col - previous_pos[1] - 1)
+    elif current_val == '7':
+        value = row + col - previous_pos[0] - previous_pos[1]
+        update_path_matrix(path_matrix, current_pos, value,
+                           (row - 1, col), (row, col + 1))
+        result = (2 * row - previous_pos[0] + 1, 2 * col - previous_pos[1] - 1)
+    elif current_val == 'F':
+        value = previous_pos[0] + col - row - previous_pos[1]
+        update_path_matrix(path_matrix, current_pos, value,
+                           (row - 1, col), (row, col - 1))
+        result = (2 * row - previous_pos[0] + 1, 2 * col - previous_pos[1] + 1)
+
+    return current_pos, result
 
 
-def complete_path_matrix(matrix, val):
+def complete_path_matrix(path_matrix: np.ndarray, val: int = 0) -> int:
     """
     Complète la matrice représentant le chemin suivi.
     """
-    zero_positions = [tuple(pos) for pos in np.argwhere(matrix == 0)]
-
+    zero_positions = [tuple(pos) for pos in np.argwhere(path_matrix == 0)]
     if not zero_positions:
         return val
-
     for pos in zero_positions:
         for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
             new_pos = (pos[0] + dx, pos[1] + dy)
-            if (0 <= new_pos[0] < matrix.shape[0] and
-                0 <= new_pos[1] < matrix.shape[1] and
-                    abs(matrix[new_pos]) == 1):
-                matrix[pos] = matrix[new_pos]
-                if val == 0 and (pos[0] == 0 or pos[0] == matrix.shape[0] - 1 or
-                                 pos[1] == 0 or pos[1] == matrix.shape[1] - 1):
-                    val = -matrix[pos]
-
-    return complete_path_matrix(matrix, val)
+            if (0 <= new_pos[0] < path_matrix.shape[0] and
+                0 <= new_pos[1] < path_matrix.shape[1] and
+                    abs(path_matrix[new_pos]) == 1):
+                path_matrix[pos] = path_matrix[new_pos]
+                if val == 0 and (pos[0] == 0 or pos[0] == path_matrix.shape[0] - 1 or
+                                 pos[1] == 0 or pos[1] == path_matrix.shape[1] - 1):
+                    val = -path_matrix[pos]
+    return complete_path_matrix(path_matrix, val)
 
 
 def main():
@@ -113,22 +106,20 @@ def main():
     Fonction principale.
     """
     field = read_input()
+    previous_pos = tuple(np.argwhere(field == 'S')[0])
     path_matrix = np.zeros_like(field, dtype=np.byte)
-
-    prev = get_sheep(field)
-    path_matrix[prev] = 2
-    curr = get_first(field, prev)
-
+    path_matrix[previous_pos] = 2
+    current_pos = get_first_position(field, previous_pos)
     steps = 0
-    while curr != prev:
-        prev, curr = get_next_position(curr, prev, field, path_matrix)
+
+    while current_pos != previous_pos:
+        previous_pos, current_pos = get_next_position(current_pos, previous_pos, field, path_matrix)
         steps += 1
 
+    enclosed = complete_path_matrix(path_matrix)
+
     print('Solution Partie 1 :', steps // 2)
-
-    ext_val = complete_path_matrix(path_matrix, 0)
-
-    print('Solution Partie 2 :', np.sum(path_matrix == ext_val))
+    print('Solution Partie 2 :', np.sum(path_matrix == enclosed))
 
 
 if __name__ == "__main__":
