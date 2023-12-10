@@ -7,7 +7,7 @@ import re
 import math
 
 
-def calculer_nombre_chemins(temps, distance):
+def best_distances_number(temps, distance):
     """
     Calcule le nombre de chemins possibles en fonction du temps et de la distance.
     """
@@ -39,13 +39,13 @@ def main():
 
     answer_1 = 1
     for temps, distance in zip(temps_liste, distances_liste):
-        answer_1 *= calculer_nombre_chemins(temps, distance)
+        answer_1 *= best_distances_number(temps, distance)
 
     temps = int(lines[0].replace(' ', '').split(':')[1])
     distance = int(lines[1].replace(' ', '').split(':')[1])
 
     print('Solution Partie 1 :', answer_1)
-    print('Solution Partie 2 :', calculer_nombre_chemins(temps, distance))
+    print('Solution Partie 2 :', best_distances_number(temps, distance))
 
 
 if __name__ == "__main__":
