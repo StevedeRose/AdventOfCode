@@ -1,20 +1,21 @@
-import argparse
+"""
+Description du module: Advent of Code Day 7
+Auteur: Steve de Rose
+Date de création: 07.12.2023
+"""
 import numpy as np
 
 card_values1 = {'2': 0, '3': 1, '4': 2, '5': 3, '6': 4, '7': 5,
                 '8': 6, '9': 7, 'T': 8, 'J': 9, 'Q': 10, 'K': 11, 'A': 12}
 
-card_values2 = {'J': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5, '7': 6,
-                '8': 7, '9': 8, 'T': 9, 'Q': 10, 'K': 11, 'A': 12}
+card_values2 = {'J': 0, '2': 1, '3': 2, '4': 3, '5': 4, '6': 5,
+                '7': 6, '8': 7, '9': 8, 'T': 9, 'Q': 10, 'K': 11, 'A': 12}
 
 
-def parse_arguments():
-    parser = argparse.ArgumentParser(description='Calculate total bids based on hands and bids from a file.')
-    parser.add_argument('--file', type=str, default='./input_7.txt', help='Path to the input file')
-    parser.add_argument('--part', type=int, choices=[1, 2], default=1, help='Part value (1 or 2)')
-    return parser.parse_args()
-
-def score(hand, part=1):
+def compute_score(hand, part=1):
+    """
+    Calcule le score d'une main de cartes.
+    """
     card_values = card_values1 if part == 1 else card_values2
     figure = {}
     score = 0
@@ -24,7 +25,7 @@ def score(hand, part=1):
         score = score * 13 + card_values[card]
 
     if part == 2:
-        if 'J' in figure.keys() and len(figure) > 1:
+        if 'J' in figure and len(figure) > 1:
             j_count = figure.pop('J')
             figure[max(figure, key=figure.get)] += j_count
 
@@ -45,28 +46,50 @@ def score(hand, part=1):
 
 
 def get_hand_bid(line):
+    """
+    Extrait la main et l'enchère à partir d'une ligne de texte.
+    """
     hand, bid = line.split()
     return list(hand), int(bid)
 
 
 def calculate_total_bids(bids):
+    """
+    Calcule le total des enchères en utilisant une liste d'enchères.
+    """
     return sum(bid * (index + 1) for index, bid in enumerate(bids[::-1]))
 
 
-def main():
-    args = parse_arguments()
-
-    with open(args.file) as f:
+def read_input(file_path='./input_7.txt'):
+    """
+    Lit le fichier d'entrée et retourne les lignes non vides.
+    """
+    with open(file_path, mode='r', encoding='utf-8') as f:
         lines = [line.split() for line in f.read().splitlines() if line]
+    return lines
 
-    hands, bids = zip(*[(list(hand), int(bid)) for hand, bid in lines])
 
-    scores = np.array([score(hand, args.part) for hand in hands], dtype=int)
+def get_solution(hands, bids, part):
+    """
+    Calcule la solution pour chaque partie.
+    """
+    scores = np.array([compute_score(hand, part) for hand in hands], dtype=int)
     sorted_indices = np.argsort(scores)[::-1]
     sorted_bids = np.array(bids)[sorted_indices]
 
-    total = calculate_total_bids(sorted_bids)
-    print('Résultat de la partie', args.part, ':', total)
+    return calculate_total_bids(sorted_bids)
+
+
+def main():
+    """
+    Fonction principale.
+    """
+    lines = read_input()
+
+    hands, bids = zip(*[(list(hand), int(bid)) for hand, bid in lines])
+
+    print('Solution Partie 1', ':', get_solution(hands, bids, 1))
+    print('Solution Partie 2', ':', get_solution(hands, bids, 2))
 
 
 if __name__ == "__main__":
