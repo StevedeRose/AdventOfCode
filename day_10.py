@@ -91,7 +91,7 @@ def complete_path_matrix(matrix, val):
     """
     zero_positions = [tuple(pos) for pos in np.argwhere(matrix == 0)]
 
-    if len(zero_positions) == 0:
+    if not zero_positions:
         return val
 
     for pos in zero_positions:

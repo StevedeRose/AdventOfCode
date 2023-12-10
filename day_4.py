@@ -26,7 +26,7 @@ def compute_solutions(lignes):
         win_cards, my_cards = [list(map(int, cartes.split()))
                                for cartes in ligne[ligne.find(':') + 2:].split(' | ')]
         nb_win = sum(my_card in win_cards for my_card in my_cards)
-        total += 2**(nb_win - 1) if nb_win > 0 else 0        
+        total += 2**(nb_win - 1) if nb_win > 0 else 0
         if nb_win > 0:
             nb_copies[index + 1: index + nb_win + 1] += nb_copies[index]
 
@@ -41,7 +41,7 @@ def main():
     lignes = load_file(file_path)
 
     solutions = compute_solutions(lignes)
-    print('Solution Partie 1 :', solutions[0])    
+    print('Solution Partie 1 :', solutions[0])
     print('Solution Partie 2 :', solutions[1])
 
 

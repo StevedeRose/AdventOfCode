@@ -54,7 +54,7 @@ def process_line(line, lines, start_index):
     nline = []
     idx = start_index
 
-    for idx, ligne in enumerate(lines[start_index:], start=start_index):
+    for idx, ligne in enumerate(lines[idx:], start=idx):
         if ligne[-1] == ':':
             break
         dst, src, rng = map(int, ligne.split())

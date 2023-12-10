@@ -24,21 +24,18 @@ def compute_score(hand, part=1):
         figure[card] = figure.get(card, 0) + 1
         score = score * 13 + card_values[card]
 
-    if part == 2:
-        if 'J' in figure and len(figure) > 1:
-            j_count = figure.pop('J')
-            figure[max(figure, key=figure.get)] += j_count
+    if part == 2 and 'J' in figure and len(figure) > 1:
+        j_count = figure.pop('J')
+        figure[max(figure, key=figure.get)] += j_count
 
     unique_figures = len(figure)
 
     if unique_figures == 1:
         score += 371293 * 6
     elif unique_figures == 2:
-        max_count = max(figure.values())
-        score += 371293 * (5 if max_count == 4 else 4)
+        score += 371293 * (5 if max(figure.values()) == 4 else 4)
     elif unique_figures == 3:
-        max_count = max(figure.values())
-        score += 371293 * (3 if max_count == 3 else 2)
+        score += 371293 * (3 if max(figure.values()) == 3 else 2)
     elif unique_figures == 4:
         score += 371293
 
