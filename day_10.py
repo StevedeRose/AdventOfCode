@@ -1,7 +1,7 @@
 """
-Description du module: Advent of Code Day 1
+Description du module: Advent of Code Day 10
 Auteur: Steve de Rose
-Date de création: 03.12.2023
+Date de création: 10.12.2023
 """
 import numpy as np
 
