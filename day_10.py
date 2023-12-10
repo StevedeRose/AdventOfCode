@@ -33,9 +33,9 @@ def update_path_matrix(matrix: np.ndarray, current_pos: tuple, val: int,
     Met à jour la matrice représentant le chemin suivi.
     """
     matrix[current_pos] = 2
-    if 0 < pos_1[0] < matrix.shape[0] and 0 < pos_1[1] < matrix.shape[1] and matrix[pos_1] == 0:
+    if 0 <= pos_1[0] < matrix.shape[0] and 0 <= pos_1[1] < matrix.shape[1] and matrix[pos_1] == 0:
         matrix[pos_1] = val
-    if 0 < pos_2[0] < matrix.shape[0] and 0 < pos_2[1] < matrix.shape[1] and matrix[pos_2] == 0:
+    if 0 <= pos_2[0] < matrix.shape[0] and 0 <= pos_2[1] < matrix.shape[1] and matrix[pos_2] == 0:
         matrix[pos_2] = val if turn else -val
 
 
@@ -86,19 +86,19 @@ def complete_path_matrix(path_matrix: np.ndarray, val: int = 0) -> int:
     Complète la matrice représentant le chemin suivi.
     """
     zero_positions = [tuple(pos) for pos in np.argwhere(path_matrix == 0)]
-    if not zero_positions:
-        return val
-    for pos in zero_positions:
-        for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            new_pos = (pos[0] + dx, pos[1] + dy)
-            if (0 <= new_pos[0] < path_matrix.shape[0] and
-                0 <= new_pos[1] < path_matrix.shape[1] and
-                    abs(path_matrix[new_pos]) == 1):
-                path_matrix[pos] = path_matrix[new_pos]
-                if val == 0 and (pos[0] == 0 or pos[0] == path_matrix.shape[0] - 1 or
-                                 pos[1] == 0 or pos[1] == path_matrix.shape[1] - 1):
-                    val = -path_matrix[pos]
-    return complete_path_matrix(path_matrix, val)
+    while zero_positions:
+        for pos in zero_positions:
+            for dx, dy in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
+                new_pos = (pos[0] + dx, pos[1] + dy)
+                if (0 <= new_pos[0] < path_matrix.shape[0] and
+                    0 <= new_pos[1] < path_matrix.shape[1] and
+                        abs(path_matrix[new_pos]) == 1):
+                    path_matrix[pos] = path_matrix[new_pos]
+                    if val == 0 and (pos[0] == 0 or pos[0] == path_matrix.shape[0] - 1 or
+                                    pos[1] == 0 or pos[1] == path_matrix.shape[1] - 1):
+                        val = -path_matrix[pos]
+        zero_positions = [tuple(pos) for pos in np.argwhere(path_matrix == 0)]
+    return val
 
 
 def main():
