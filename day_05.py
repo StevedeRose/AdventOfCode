@@ -11,13 +11,13 @@ class Plan:
     """
 
     def __init__(self, plan):
-        self.tuples = [list(map(int, line.split())) for line in plan]
+        self.lines = [list(map(int, line.split())) for line in plan]
 
     def apply_once(self, seed):
         """
         Applique la fonction à une seule valeur.
         """
-        for (dst, src, rng) in self.tuples:
+        for (dst, src, rng) in self.lines:
             if src <= seed < src + rng:
                 return seed + dst - src
         return seed
@@ -45,7 +45,7 @@ def range_apply(function, intervals):
     Applique la fonction à chaque intervalle de la liste 'intervals'.
     """
     result = []
-    for dest, src, rng in function.tuples:
+    for dest, src, rng in function.lines:
         src_end = src + rng
         new_intervals = []
         while intervals:
