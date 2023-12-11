@@ -22,11 +22,11 @@ class Plan:
                 return seed + dst - src
         return seed
 
-    def range_apply(self, ranges):
+    def range_apply(self, intervals):
         """
-        Applique la fonction à chaque intervalle de la liste 'ranges'.
+        Applique la fonction à chaque intervalle de la liste 'intervals'.
         """
-        return range_apply(self, ranges)
+        return range_apply(self, intervals)
 
 
 def parse_input(file_path='./input_05.txt'):
@@ -40,27 +40,27 @@ def parse_input(file_path='./input_05.txt'):
     return seeds, plans
 
 
-def range_apply(function, ranges):
+def range_apply(function, intervals):
     """
-    Applique la fonction à chaque intervalle de la liste 'ranges'.
+    Applique la fonction à chaque intervalle de la liste 'intervals'.
     """
     result = []
     for dest, src, rng in function.tuples:
         src_end = src + rng
-        new_ranges = []
-        while ranges:
-            first, last = ranges.pop()
+        new_intervals = []
+        while intervals:
+            first, last = intervals.pop()
             before = (first, min(last, src))
             inter = (max(first, src), min(src_end, last))
             after = (max(src_end, first), last)
             if before[1] > before[0]:
-                new_ranges.append(before)
+                new_intervals.append(before)
             if inter[1] > inter[0]:
                 result.append((inter[0] - src + dest, inter[1] - src + dest))
             if after[1] > after[0]:
-                new_ranges.append(after)
-        ranges = new_ranges
-    return result + ranges
+                new_intervals.append(after)
+        intervals = new_intervals
+    return result + intervals
 
 
 def main():
@@ -77,10 +77,10 @@ def main():
 
     result_2 = []
     for seed_start, seed_range in zip(seeds[::2], seeds[1::2]):
-        ranges = [(seed_start, seed_start + seed_range)]
+        intervals = [(seed_start, seed_start + seed_range)]
         for plan in plans:
-            ranges = plan.range_apply(ranges)
-        result_2.append(min(ranges)[0])
+            intervals = plan.range_apply(intervals)
+        result_2.append(min(intervals)[0])
     print("Solution Partie 2:", min(result_2))
 
 
