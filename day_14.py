@@ -40,7 +40,7 @@ def compute_total(field):
     """
     Calcule la charge totale d'un champ.
     """
-    return sum((np.sum(line == 'O') * (index + 1) for index, line in enumerate(field[::-1])))
+    return np.sum(np.arange(1, field.shape[0] + 1)[:, None] * (field[::-1] == 'O'), axis=0).sum()
 
 
 def compute_solutions(field):
@@ -58,14 +58,12 @@ def compute_solutions(field):
         tilt_field(field, ALL)
         cycle_totals[i] = compute_total(field)
         same_args = np.argwhere(cycle_totals[:i] == cycle_totals[i]).flatten()
-        if len(same_args) > 2:
-            x, y, z = same_args[-3:]
-            if i + y == 2 * z and i + x == y + z:
-                break
+        if len(same_args) > 1:
+            x, y = same_args[-2:]
+            if np.array_equal(cycle_totals[x:y], cycle_totals[y:i]):
+                return solution_part_1, cycle_totals[(999999999 - x) % (y - x) + x - 1]
 
-    solution_part_2 = cycle_totals[(999999999 - x) % (z - y) + x - 1]
-
-    return solution_part_1, solution_part_2
+    return solution_part_1, cycle_totals[-1]
 
 
 def read_input(file_path='./input_14.txt'):
