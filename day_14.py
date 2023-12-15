@@ -9,15 +9,14 @@ import numpy as np
 FIRST, REST, ALL = 1, 2, 3
 
 
-def tilt_line(line):
+def tilt_line(line: np.char.array) -> None:
     """
     Penche une ligne.
     """
     free_spot = 0
     for index, spot in enumerate(line):
         if index == free_spot:
-            if spot != '.':
-                free_spot += 1
+            free_spot += spot != '.'
         elif spot == '#':
             free_spot = index + 1
         elif spot == 'O':
@@ -41,7 +40,7 @@ def compute_total(field):
     """
     Calcule la charge totale d'un champ.
     """
-    return sum([sum(line == 'O') * (index + 1) for index, line in enumerate(field[::-1])])
+    return sum((np.sum(line == 'O') * (index + 1) for index, line in enumerate(field[::-1])))
 
 
 def compute_solutions(field):
@@ -58,8 +57,8 @@ def compute_solutions(field):
     for i in range(999999999):
         tilt_field(field, ALL)
         cycle_totals[i] = compute_total(field)
-        same_args = np.argwhere(cycle_totals[:i] == cycle_totals[i])[:, 0]
-        if i > 3 and len(same_args) > 2:
+        same_args = np.argwhere(cycle_totals[:i] == cycle_totals[i]).flatten()
+        if len(same_args) > 2:
             x, y, z = same_args[-3:]
             if i + y == 2 * z and i + x == y + z:
                 break
@@ -69,13 +68,12 @@ def compute_solutions(field):
     return solution_part_1, solution_part_2
 
 
-def read_input(file_path: str = './input_14.txt') -> list:
+def read_input(file_path='./input_14.txt'):
     """
     Lit le fichier d'entrée et renvoie une liste de tuples.
     """
     with open(file_path, mode='r', encoding='utf-8') as f:
-        field = np.array([list(line)
-                         for line in f.read().splitlines() if line])
+        field = np.array([list(l) for l in f.read().splitlines() if l])
     return field
 
 
