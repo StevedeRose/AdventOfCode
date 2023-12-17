@@ -6,7 +6,7 @@ Date de création: 15.12.2023
 from functools import reduce, cache
 from collections import defaultdict
 
-HASH = {i: (i * 17) % 256 for i in range(256)}
+TABLE = {i: (i * 17) % 256 for i in range(256)}
 BOXES = defaultdict(dict)
 
 
@@ -15,7 +15,7 @@ def apply_hash(word):
     """
     Applique l'algorithme HASH à un mot.
     """
-    return reduce(lambda h, c: HASH[(h + ord(c)) % 256], word, 0)
+    return reduce(lambda result, c: TABLE[(result + ord(c)) % 256], word, 0)
 
 
 def read_input(file_path='./input_15.txt'):
@@ -23,22 +23,20 @@ def read_input(file_path='./input_15.txt'):
     Lit le fichier d'entrée et renvoie une liste de mots.
     """
     with open(file_path, mode='r', encoding='utf-8') as f:
-        words = f.read().strip().split(',')
-    return words
+        return f.read().strip().split(',')
+
 
 def put_words_in_boxes(words):
     """
     Place les labels et les distances focales dans les boîtes.
     """
     for word in words:
-        if word[-1] == '-':
+        if word.endswith('-'):
             label = word[:-1]
-            index = apply_hash(label)
-            BOXES[index].pop(label, None)
+            BOXES[apply_hash(label)].pop(label, None)
         else:
             label, focal_length = word.split('=')
-            index = apply_hash(label)
-            BOXES[index][label] = int(focal_length)
+            BOXES[apply_hash(label)][label] = int(focal_length)
 
 
 def compute_solution_1(words):
@@ -48,14 +46,13 @@ def compute_solution_1(words):
     return sum(apply_hash(word) for word in words)
 
 
-
 def compute_solution_2(words):
     """
     Calcule la solution de la partie 2.
     """
     put_words_in_boxes(words)
-    return sum((i + 1) * (j + 1) * focal_length for i, box in BOXES.items()
-               for j, focal_length in enumerate(box.values()))
+    return sum((i + 1) * j * focal_length for i, box in BOXES.items()
+               for j, focal_length in enumerate(box.values(), start=1))
 
 
 def main():

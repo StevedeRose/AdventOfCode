@@ -48,21 +48,17 @@ def compute_solutions(field):
     Calcule les solutions du problème.
     """
     tilt_field(field, FIRST)
-
     solution_part_1 = compute_total(field)
-
     tilt_field(field, REST)
-
     cycle_totals = np.zeros(999999999, dtype=np.uintc)
     for i in range(999999999):
         tilt_field(field, ALL)
         cycle_totals[i] = compute_total(field)
         same_args = np.argwhere(cycle_totals[:i] == cycle_totals[i]).flatten()
-        if len(same_args) > 1:
+        if len(same_args) > 2:
             x, y = same_args[-2:]
-            if np.array_equal(cycle_totals[x:y], cycle_totals[y:i]):
+            if y - x > 3 and np.array_equal(cycle_totals[x:y], cycle_totals[y:i]):
                 return solution_part_1, cycle_totals[(999999999 - x) % (y - x) + x - 1]
-
     return solution_part_1, cycle_totals[-1]
 
 
