@@ -26,7 +26,23 @@ class Plan:
         """
         Applique la fonction à chaque intervalle de la liste 'intervals'.
         """
-        return range_apply(self, intervals)
+        result = []
+        for dest, src, rng in self.lines:
+            src_end = src + rng
+            new_intervals = []
+            while intervals:
+                first, last = intervals.pop()
+                before = (first, min(last, src))
+                inter = (max(first, src), min(src_end, last))
+                after = (max(src_end, first), last)
+                if before[1] > before[0]:
+                    new_intervals.append(before)
+                if inter[1] > inter[0]:
+                    result.append((inter[0] - src + dest, inter[1] - src + dest))
+                if after[1] > after[0]:
+                    new_intervals.append(after)
+            intervals = new_intervals
+        return result + intervals
 
 
 def parse_input(file_path='./input_05.txt'):
@@ -38,29 +54,6 @@ def parse_input(file_path='./input_05.txt'):
         plans = [plan.splitlines()[1:] for plan in text[1:]]
         seeds = [int(x) for x in text[0].split(':')[1].split()]
     return seeds, plans
-
-
-def range_apply(function, intervals):
-    """
-    Applique la fonction à chaque intervalle de la liste 'intervals'.
-    """
-    result = []
-    for dest, src, rng in function.lines:
-        src_end = src + rng
-        new_intervals = []
-        while intervals:
-            first, last = intervals.pop()
-            before = (first, min(last, src))
-            inter = (max(first, src), min(src_end, last))
-            after = (max(src_end, first), last)
-            if before[1] > before[0]:
-                new_intervals.append(before)
-            if inter[1] > inter[0]:
-                result.append((inter[0] - src + dest, inter[1] - src + dest))
-            if after[1] > after[0]:
-                new_intervals.append(after)
-        intervals = new_intervals
-    return result + intervals
 
 
 def main():

@@ -1,5 +1,5 @@
 """
-Module: Advent of Code Day 6
+Description du module: Advent of Code Day 6
 Auteur: Steve de Rose
 Date de création: 06.12.2023
 """

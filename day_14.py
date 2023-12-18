@@ -28,9 +28,9 @@ def tilt_field(field, part):
     """
     Fait faire la partie 'part' d'un cycle à un champ.
     """
-    if part in (ALL, FIRST):
+    if part != REST:
         np.apply_along_axis(tilt_line, 0, field)
-    if part in (ALL, REST):
+    if part != FIRST:
         np.apply_along_axis(tilt_line, 1, field)
         np.apply_along_axis(tilt_line, 0, field[::-1])
         np.apply_along_axis(tilt_line, 1, field[:, ::-1])
@@ -55,7 +55,7 @@ def compute_solutions(field):
         tilt_field(field, ALL)
         cycle_totals[i] = compute_total(field)
         same_args = np.argwhere(cycle_totals[:i] == cycle_totals[i]).flatten()
-        if len(same_args) > 2:
+        if same_args.shape[0] > 1:
             x, y = same_args[-2:]
             if y - x > 3 and np.array_equal(cycle_totals[x:y], cycle_totals[y:i]):
                 return solution_part_1, cycle_totals[(999999999 - x) % (y - x) + x - 1]

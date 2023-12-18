@@ -65,9 +65,9 @@ class Layout:
         """
         for i, j in np.ndindex(self.data.shape):
             self.grid[i, j] = Square()
-            if i == 0 or i == self.data.shape[0] - 1:
+            if i in (0, self.data.shape[0] - 1):
                 self.grid[i, j].lock(NORTH if i == 0 else SOUTH)
-            if j == 0 or j == self.data.shape[1] - 1:
+            if j in (0, self.data.shape[1] - 1):
                 self.grid[i, j].lock(WEST if j == 0 else EAST)
 
     def beam(self, i=0, j=0, direction=EAST):

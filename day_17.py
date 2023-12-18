@@ -11,7 +11,7 @@ OFFSETS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
 DIRECTIONS = range(4)
 
 
-def read_input(file_path='input_17.txt') -> np.ndarray:
+def read_input(file_path: str = 'input_17.txt') -> np.ndarray:
     """
     Charge le tableau à partir d'un fichier.
     """
@@ -19,53 +19,59 @@ def read_input(file_path='input_17.txt') -> np.ndarray:
         return np.array([[int(c) for c in l.strip()] for l in f.readlines()], dtype=int)
 
 
-def in_range(pos, goal) -> bool:
+def in_range(pos: (int, int), goal: (int, int)) -> bool:
     """
     Vérifie si la position donnée est dans les limites du tableau.
     """
     return 0 <= pos[0] <= goal[0] and 0 <= pos[1] <= goal[1]
 
 
-def find_least_heat_loss(chart, mindist, maxdist, pos = (0, 0)) -> int:
+def get_new_position(pos: (int, int), offset: (int, int), distance: int) -> (int, int):
+    """
+    Calcule la nouvelle position en fonction de la position actuelle, du décalage et de la distance.
+    """
+    return pos[0] + offset[0] * distance, pos[1] + offset[1] * distance
+
+
+def find_least_heat_loss(chart: np.ndarray, bounds: (int, int)) -> int:
     """
     Trouve le coût minimum pour atteindre le coin en bas à droite de la grille.
     """
-    data = [(0, pos, -1)]
+    data = [(0, (0, 0), -1)]
     seen = set()
     costs = defaultdict(lambda: np.inf)
-    goal = tuple(np.array(chart.shape) - 1)
+    goal = (chart.shape[0] - 1, chart.shape[1] - 1)
 
-    while data and pos != goal:
-        cost, pos, forbidden_direction = heappop(data)
-        if (pos, forbidden_direction) in seen:
+    while data:
+        cost, pos, stop = heappop(data)
+        if pos == goal:
+            break
+        if (pos, stop) in seen:
             continue
-        seen.add((pos, forbidden_direction))
-        for direction in DIRECTIONS:
-            cost_increase = 0
-            if forbidden_direction in (direction, (direction + 2) % 4):
+        seen.add((pos, stop))
+        for way in DIRECTIONS:
+            if stop in {way, (way + 2) % 4}:
                 continue
-            for step in range(1, maxdist + 1):
-                new_pos = (pos[0] + OFFSETS[direction][0] * step,
-                           pos[1] + OFFSETS[direction][1] * step)
+            offset = OFFSETS[way]
+            cost_increase = 0
+            for distance in range(1, bounds[1]):
+                new_pos = get_new_position(pos, offset, distance)
                 if in_range(new_pos, goal):
                     cost_increase += chart[new_pos]
-                    if step < mindist:
-                        continue
-                    new_cost = cost + cost_increase
-                    if costs[new_pos, direction] <= new_cost:
-                        continue
-                    costs[new_pos, direction] = new_cost
-                    heappush(data, (new_cost, new_pos, direction))
+                    if distance > bounds[0] and costs[new_pos, way] > cost + cost_increase:
+                        costs[new_pos, way] = cost + cost_increase
+                        heappush(data, (costs[new_pos, way], new_pos, way))
     return cost
 
 
-def main():
+def main() -> None:
     """
     Fonction principale.
     """
     chart = read_input()
-    print("Solution Partie 1 :", find_least_heat_loss(chart, 1, 3))
-    print("Solution Partie 2 :", find_least_heat_loss(chart, 4, 10))
+    bounds_1, bounds_2 = (0, 4), (3, 11)
+    print(f'Solution Partie 1 : {find_least_heat_loss(chart, bounds_1)}')
+    print(f'Solution Partie 2 : {find_least_heat_loss(chart, bounds_2)}')
 
 
 if __name__ == "__main__":

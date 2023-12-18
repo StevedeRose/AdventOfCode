@@ -20,7 +20,7 @@ def compute_values(history):
         history = history[1:] - history[:-1]
         sign *= -1
 
-    return array([previous_value, next_value])
+    return array((previous_value, next_value))
 
 
 def read_input(file_path='./input_09.txt'):
@@ -37,7 +37,7 @@ def main():
     """
     Fonction principale.
     """
-    solutions = array([0, 0])
+    solutions = array((0, 0))
     lines = read_input()
 
     # Calcule les valeurs pour chaque ligne et agrège les solutions
